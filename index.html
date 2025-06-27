@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataQ: Charting Your Data-Driven Future</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000428; /* Fallback background */
+            background: linear-gradient(to bottom, #000428, #004e92);
+            color: #E0E0E0;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+        .text-gradient {
+            background: linear-gradient(90deg, #FFFFFF, #B0B0B0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .btn-gradient {
+            background: linear-gradient(90deg, #1E90FF, #00BFFF);
+            transition: all 0.3s ease-in-out;
+        }
+        .btn-gradient:hover {
+            box-shadow: 0 0 20px rgba(30, 144, 255, 0.7);
+            transform: translateY(-2px);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .hero-section {
+            position: relative;
+            background-image: url('https://storage.googleapis.com/gemini-prod-us-west1-423528997357/uploaded/image_db4097.jpg_1d2e360a-45f9-4757-a6d0-7b58e4450406');
+            background-size: cover;
+            background-position: center;
+        }
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to top, rgba(0, 4, 40, 1) 5%, rgba(0, 4, 40, 0.6) 50%, rgba(0, 4, 40, 0.8) 100%);
+            z-index: 1;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Before/After Slider Styles --- */
+        .comparison-container { position: relative; width: 100%; max-width: 1100px; margin: auto; border-radius: 1rem; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 2px solid rgba(255, 255, 255, 0.1); aspect-ratio: 16 / 9; min-height: 450px; }
+        .comparison-view { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; }
+        .comparison-before { width: 50%; border-right: 4px solid white; z-index: 2; }
+        .comparison-after { z-index: 1; }
+        .slider-handle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 50px; height: 50px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: ew-resize; z-index: 3; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
+        .slider-handle svg { color: #004e92; width: 24px; height: 24px; }
+        .comparison-content { padding: 2rem 3rem; color: white; height: 100%; width: 1100px; max-width: 100%; }
+        .comparison-after .comparison-content { background: linear-gradient(135deg, #004e92, #000428); }
+        .comparison-before .comparison-content { background: #4A5568; filter: grayscale(80%); }
+        .comparison-title { font-size: 2rem; font-weight: 800; margin-bottom: 1.5rem; border-bottom: 2px solid; padding-bottom: 0.5rem; }
+        .comparison-before .comparison-title { border-color: rgba(255,255,255,0.3); }
+        .comparison-after .comparison-title { border-color: #00BFFF; }
+        .benefit-item { display: flex; align-items: center; margin-bottom: 1.25rem; font-size: 1.1rem; }
+        .benefit-item svg { margin-right: 1rem; flex-shrink: 0; }
+        .comparison-before .benefit-item { color: #A0AEC0; }
+        .comparison-after .benefit-item { color: #E2E8F0; }
+        .comparison-before .benefit-item svg { color: #E53E3E; }
+        .comparison-after .benefit-item svg { color: #38B2AC; }
+        
+        /* --- AI Questionnaire Modal Styles --- */
+        #questionnaire-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); display: flex; align-items: center; justify-content: center; z-index: 100; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
+        #questionnaire-modal.is-visible { opacity: 1; visibility: visible; }
+        .modal-content { max-width: 800px; width: 90%; padding: 2rem; max-height: 80vh; overflow-y: auto; display: flex; flex-direction: column; }
+        .question-step { display: none; }
+        .question-step.active { display: block; animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .question-title { font-size: 1.8rem; font-weight: 700; color: #fff; margin-bottom: 1.5rem; }
+        .question-label { font-size: 1.1rem; margin-bottom: 0.5rem; color: #ccc; }
+        .question-input, .question-select { width: 100%; background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; padding: 0.75rem 1rem; border-radius: 0.5rem; margin-bottom: 1rem; }
+        .question-input::placeholder { color: rgba(255, 255, 255, 0.5); }
+        .modal-nav { display: flex; justify-content: space-between; margin-top: 1.5rem; }
+        
+        /* Markdown-like formatting for AI response */
+        #strategy-output { animation: fadeIn 0.5s ease-in-out; }
+        #strategy-output h2 { font-size: 1.8rem; font-weight: bold; color: #fff; margin-bottom: 1rem; }
+        #strategy-output h3 { font-size: 1.5rem; font-weight: 700; color: #00BFFF; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+        #strategy-output p { margin-bottom: 1rem; line-height: 1.6; }
+        #strategy-output ul { list-style-type: disc; margin-left: 1.5rem; margin-bottom: 1rem; }
+        #strategy-output strong { color: #E0E0E0; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header -->
+    <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="#"><img src="https://sdmntprwestus.oaiusercontent.com/files/00000000-1c5c-6230-99e9-22c9b8848c26/raw?se=2025-06-27T09%3A26%3A45Z&sp=r&sv=2024-08-04&sr=b&scid=6c0f1a8e-a482-509a-9459-3df683ed8dcb&skoid=0da8417a-a4c3-4a19-9b05-b82cee9d8868&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-06-26T17%3A30%3A04Z&ske=2025-06-27T17%3A30%3A04Z&sks=b&skv=2024-08-04&sig=rrgsbnEONYaWz94kJGXX7HwQmQ0PrMhl2aW7zPkVCTw%3D" alt="DataQ Logo" class="h-14" onerror="this.onerror=null; this.outerHTML='<span class=\'text-3xl font-bold text-white\'>D<span class=\'text-cyan-400\'>Q</span> DataQ</span>'"></a>
+                <nav class="hidden lg:flex items-center space-x-8"><a href="#services" class="text-gray-300 hover:text-cyan-400 transition">Services</a><a href="#solutions" class="text-gray-300 hover:text-cyan-400 transition">Solutions</a><a href="#about" class="text-gray-300 hover:text-cyan-400 transition">About</a><a href="#resources" class="text-gray-300 hover:text-cyan-400 transition">Resources</a></nav>
+                <a href="#contact" class="hidden lg:inline-block px-6 py-3 rounded-full font-semibold text-white btn-gradient">Turn my data into insights</a>
+                <button id="mobile-menu-button" class="lg:hidden text-white focus:outline-none"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg></button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden lg:hidden bg-gray-800/90 backdrop-blur-sm"><a href="#services" class="block py-3 px-6 text-white hover:bg-cyan-500/20">Services</a><a href="#solutions" class="block py-3 px-6 text-white hover:bg-cyan-500/20">Solutions</a><a href="#about" class="block py-3 px-6 text-white hover:bg-cyan-500/20">About</a><a href="#resources" class="block py-3 px-6 text-white hover:bg-cyan-500/20">Resources</a><a href="#contact" class="block py-3 px-6 text-white hover:bg-cyan-500/20">Turn my data into insights</a></div>
+    </header>
+
+    <main>
+        <!-- Sections: Hero, Trust, Services, Slider -->
+        <section class="hero-section min-h-screen flex items-center"><div class="hero-content container mx-auto px-6 text-center"><h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold text-gradient mb-4 leading-tight">Your Blueprint for a Smarter Future.</h1><p class="text-lg md:text-xl max-w-3xl mx-auto text-gray-300 mb-8">We empower organizations to unlock the full potential of their data with our comprehensive database, governance, and AI-powered automation solutions.</p><div class="flex justify-center space-x-4"><a href="#contact" class="px-8 py-4 rounded-full font-bold text-white btn-gradient text-lg">Turn my data into insights</a><a href="#services" class="px-8 py-4 rounded-full font-bold text-white bg-white/10 hover:bg-white/20 transition duration-300 text-lg">Explore Our Services</a></div></div></section>
+        <section class="py-12"><div class="container mx-auto px-6 text-center"><p class="text-gray-400 uppercase tracking-widest mb-8">Trusted by industry leaders</p><div class="flex flex-wrap justify-center items-center gap-x-12 gap-y-6"><img src="https://placehold.co/120x40/FFFFFF/CCCCCC?text=InnovateCorp" alt="Partner Logo 1" class="h-8 opacity-60 hover:opacity-100 transition duration-300" onerror="this.style.display='none'"><img src="https://placehold.co/120x40/FFFFFF/CCCCCC?text=QuantumLeap" alt="Partner Logo 2" class="h-8 opacity-60 hover:opacity-100 transition duration-300" onerror="this.style.display='none'"><img src="https://placehold.co/120x40/FFFFFF/CCCCCC?text=ApexIndustries" alt="Partner Logo 3" class="h-8 opacity-60 hover:opacity-100 transition duration-300" onerror="this.style.display='none'"><img src="https://placehold.co/120x40/FFFFFF/CCCCCC?text=FutureWorks" alt="Partner Logo 4" class="h-8 opacity-60 hover:opacity-100 transition duration-300" onerror="this.style.display='none'"><img src="https://placehold.co/120x40/FFFFFF/CCCCCC?text=NextGen" alt="Partner Logo 5" class="h-8 opacity-60 hover:opacity-100 transition duration-300" onerror="this.style.display='none'"></div></div></section>
+        <section id="services" class="py-20"><div class="container mx-auto px-6"><div class="text-center mb-16"><h2 class="text-4xl md:text-5xl font-bold text-white">Unlock Your Data's Potential</h2><p class="text-lg text-gray-400 mt-4 max-w-2xl mx-auto">An integrated suite of services to manage, govern, and innovate with your data.</p></div><div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8"><div class="glass-card rounded-2xl p-8 text-center hover:border-cyan-400 transition-all duration-300 transform hover:-translate-y-2 fade-in-up"><div class="inline-block p-4 bg-cyan-500/10 rounded-xl mb-6"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><path d="M20 12 L20 6 C20 4.89543 19.1046 4 18 4 L6 4 C4.89543 4 4 4.89543 4 6 L4 18 C4 19.1046 4.89543 20 6 20 L12 20 M14 18 C14 15.7909 15.7909 14 18 14 C20.2091 14 22 15.7909 22 18 C22 20.2091 20.2091 22 18 22 C15.7909 22 14 20.2091 14 18 Z M18 16 L18 18 M16 18 L20 18"/></svg></div><h3 class="text-2xl font-bold text-white mb-3">Database Solutions</h3><p class="text-gray-400">Reliable, scalable, and secure database lifecycle management to power your critical applications.</p></div><div class="glass-card rounded-2xl p-8 text-center hover:border-cyan-400 transition-all duration-300 transform hover:-translate-y-2 fade-in-up" style="animation-delay: 0.2s;"><div class="inline-block p-4 bg-cyan-500/10 rounded-xl mb-6"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><h3 class="text-2xl font-bold text-white mb-3">Data Platforms & Lakehouse</h3><p class="text-gray-400">Unify your data landscape with a next-gen data lakehouse for seamless access and analytics.</p></div><div class="glass-card rounded-2xl p-8 text-center hover:border-cyan-400 transition-all duration-300 transform hover:-translate-y-2 fade-in-up" style="animation-delay: 0.4s;"><div class="inline-block p-4 bg-cyan-500/10 rounded-xl mb-6"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div><h3 class="text-2xl font-bold text-white mb-3">Data Governance</h3><p class="text-gray-400">Establish trust and control over your data assets with robust governance frameworks.</p></div><div class="glass-card rounded-2xl p-8 text-center hover:border-cyan-400 transition-all duration-300 transform hover:-translate-y-2 fade-in-up" style="animation-delay: 0.6s;"><div class="inline-block p-4 bg-cyan-500/10 rounded-xl mb-6"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><path d="M15 7h2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2m-6 0H7a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h2m-6 6h12m-3-4v.01M9 11v.01M12 11v.01M12 8v-2M15 5h-6"/><path d="M8 5h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"/></svg></div><h3 class="text-2xl font-bold text-white mb-3">AI & Automation</h3><p class="text-gray-400">Leverage Business Intelligence and AI to uncover actionable insights and automate processes.</p></div></div></div></section>
+        <section id="transformation" class="py-20"><div class="container mx-auto px-6"><div class="text-center mb-16"><h2 class="text-4xl md:text-5xl font-bold text-white">From Data Chaos to Clarity</h2><p class="text-lg text-gray-400 mt-4 max-w-2xl mx-auto">Slide to see the transformational impact of a unified data strategy.</p></div><div id="comparison-container" class="comparison-container"><div class="comparison-view comparison-after"><div class="comparison-content"><h3 class="comparison-title">After DataQ</h3><div class="space-y-5"><div class="benefit-item"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 9 8 12 2 12"></polyline><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg><span>Unified Data Platform</span></div><div class="benefit-item"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg><span>Significant Cost Savings</span></div><div class="benefit-item"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg><span>Real-time, Automated Insights</span></div><div class="benefit-item"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg><span>Enhanced Security & Governance</span></div><div class="benefit-item"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg><span>Data-Driven Growth</span></div></div></div></div><div class="comparison-view comparison-before"><div class="comparison-content"><h3 class="comparison-title">Before DataQ</h3><div class="space-y-5"><div class="benefit-item"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg><span>Disconnected Data Silos</span></div><div class="benefit-item"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg><span>High Operational Costs</span></div><div class="benefit-item"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span>Slow, Manual Reporting</span></div><div class="benefit-item"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path><line x1="18" y1="6" x2="6" y2="18"></line></svg><span>Compliance & Security Risks</span></div><div class="benefit-item"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="1" x2="23" y2="23"></line><path d="M21 21H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3m3-3h6l2 3h4a2 2 0 0 1 2 2v9.34m-7.72-2.06a4 4 0 1 1-5.56-5.56"></path></svg><span>Missed Opportunities</span></div></div></div></div><div id="slider-handle" class="slider-handle"><svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" class="w-8 h-8"><path d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/><path d="M14.354 1.646a.5.5 0 0 1 0 .708L8.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg></div></div></div></section>
+        <section id="solutions" class="py-20"><div class="container mx-auto px-6"><div class="text-center mb-16"><h2 class="text-4xl md:text-5xl font-bold text-white">Proven Success Stories</h2><p class="text-lg text-gray-400 mt-4 max-w-2xl mx-auto">See how we've helped businesses like yours transform their data strategy.</p></div><div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"><div class="glass-card rounded-2xl overflow-hidden group"><img src="https://placehold.co/600x400/004e92/FFFFFF?text=Retail+Analytics" alt="Case Study 1" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/600x400/004e92/FFFFFF?text=Image';"><div class="p-8"><p class="text-cyan-400 uppercase text-sm font-semibold mb-2">Retail & E-commerce</p><h3 class="text-xl font-bold text-white mb-3">Reduced operational costs by 30% for a leading online retailer.</h3><a href="#" class="font-semibold text-white hover:text-cyan-400 transition group">Read Story <span class="group-hover:ml-2 transition-all duration-300">&rarr;</span></a></div></div><div class="glass-card rounded-2xl overflow-hidden group"><img src="https://placehold.co/600x400/004e92/FFFFFF?text=Financial+Security" alt="Case Study 2" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/600x400/004e92/FFFFFF?text=Image';"><div class="p-8"><p class="text-cyan-400 uppercase text-sm font-semibold mb-2">Financial Services</p<h3 class="text-xl font-bold text-white mb-3">Enhanced fraud detection accuracy by 45% with AI models.</h3><a href="#" class="font-semibold text-white hover:text-cyan-400 transition group">Read Story <span class="group-hover:ml-2 transition-all duration-300">&rarr;</span></a></div></div><div class="glass-card rounded-2xl overflow-hidden group"><img src="https://placehold.co/600x400/004e92/FFFFFF?text=Healthcare+Data" alt="Case Study 3" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/600x400/004e92/FFFFFF?text=Image';"><div class="p-8"><p class="text-cyan-400 uppercase text-sm font-semibold mb-2">Healthcare</p><h3 class="text-xl font-bold text-white mb-3">Unified patient data, improving analytics speed by 200%.</h3><a href="#" class="font-semibold text-white hover:text-cyan-400 transition group">Read Story <span class="group-hover:ml-2 transition-all duration-300">&rarr;</span></a></div></div></div></div></section>
+
+        <!-- Final CTA / AI Questionnaire Section -->
+        <section id="contact" class="py-24">
+            <div class="container mx-auto px-6">
+                <div class="glass-card rounded-2xl p-10 md:p-16 text-center">
+                    <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-4">Ready for a Data-Driven Future?</h2>
+                    <p class="text-lg text-gray-300 max-w-3xl mx-auto mb-8">Answer a few questions and our AI will generate a personalized data strategy proposal for your business, demonstrating the power of DataQ.</p>
+                    <button id="start-questionnaire-btn" class="inline-block px-10 py-5 rounded-full font-bold text-white btn-gradient text-xl">
+                        ✨ Generate My Data Proposal
+                    </button>
+                     <p class="mt-6">
+                        <a href="#contact-info" class="text-gray-300 hover:text-cyan-400 transition underline">Or, reach out for a free consultation</a>
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="contact-info" class="bg-black/20 pt-16 pb-8"><div class="container mx-auto px-6"><div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12"><div class="col-span-2 lg:col-span-1"><a href="#"><img src="https://sdmntprwestus.oaiusercontent.com/files/00000000-1c5c-6230-99e9-22c9b8848c26/raw?se=2025-06-27T09%3A26%3A45Z&sp=r&sv=2024-08-04&sr=b&scid=6c0f1a8e-a482-509a-9459-3df683ed8dcb&skoid=0da8417a-a4c3-4a19-9b05-b82cee9d8868&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-06-26T17%3A30%3A04Z&ske=2025-06-27T17%3A30%3A04Z&sks=b&skv=2024-08-04&sig=rrgsbnEONYaWz94kJGXX7HwQmQ0PrMhl2aW7zPkVCTw%3D" alt="DataQ Logo" class="h-16 mb-4" onerror="this.onerror=null; this.outerHTML='<h4 class=\'text-2xl font-bold text-white mb-4\'>D<span class=\'text-cyan-400\'>Q</span> DataQ</h4>'"></a><p class="text-gray-400 mb-4">Empowering data-driven decisions through innovative technology and expert guidance.</p><div class="flex space-x-4"><a href="#" class="text-gray-400 hover:text-white transition"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></a><a href="#" class="text-gray-400 hover:text-white transition"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616v.064c0 2.298 1.634 4.212 3.793 4.649-.65.177-1.354.23-2.06.088.607 1.882 2.363 3.256 4.448 3.294-1.623 1.272-3.665 2.03-5.88 2.03-.38 0-.755-.022-1.124-.066 2.094 1.342 4.585 2.123 7.265 2.123 8.711 0 13.481-7.229 13.481-13.481 0-.204-.005-.407-.013-.61a9.648 9.648 0 0 0 2.385-2.478z"/></svg></a></div></div><div><h4 class="text-lg font-semibold text-white mb-4">Services</h4><ul class="space-y-3"><li><a href="#" class="text-gray-400 hover:text-cyan-400 transition">Database Solutions</a></li><li><a href="#" class="text-gray-400 hover:text-cyan-400 transition">Data Platforms</a></li><li><a href="#" class="text-gray-400 hover:text-cyan-400 transition">Data Governance</a></li><li><a href="#" class="text-gray-400 hover:text-cyan-400 transition">AI & Automation</a></li></ul></div><div><h4 class="text-lg font-semibold text-white mb-4">Company</h4><ul class="space-y-3"><li><a href="#" class="text-gray-400 hover:text-cyan-400 transition">About Us</a></li><li><a href="#" class="text-gray-400 hover:text-cyan-400 transition">Careers</a></li><li><a href="#" class="text-gray-400 hover:text-cyan-400 transition">Resources</a></li><li><a href="#" class="text-gray-400 hover:text-cyan-400 transition">Contact Us</a></li></ul></div><div><h4 class="text-lg font-semibold text-white mb-4">Get in Touch</h4><ul class="space-y-3 text-gray-400"><li class="flex items-start"><span class="mr-2 mt-1 flex-shrink-0">📍</span> <span>Room30, Unit 3.07, Level 3, KL Gateway Mall, 2, Jalan Kerinchi, Kampung Kerinchi, 59200 Kuala Lumpur</span></li><li class="flex items-center"><span class="mr-2">📞</span> +60 3 8408 1522</li><li class="flex items-center"><span class="mr-2">✉️</span> <a href="mailto:hello@dataq.tech" class="hover:text-cyan-400 transition">hello@dataq.tech</a></li></ul></div></div><div class="mt-12 border-t border-gray-800 pt-8 text-center text-gray-500"><p>&copy; 2025 DataQ. All Rights Reserved. | <a href="#" class="hover:text-white">Privacy Policy</a> | <a href="#" class="hover:text-white">Terms of Service</a></p></div></div></footer>
+
+    <!-- AI Questionnaire Modal -->
+    <div id="questionnaire-modal">
+        <div class="modal-content glass-card rounded-2xl">
+            
+            <!-- Step 1: Industry & Size -->
+            <div id="step-1" class="question-step active">
+                <h3 class="question-title">About Your Business</h3>
+                <label for="q1-industry" class="question-label">What industry are you in?</label>
+                <input type="text" id="q1-industry" class="question-input" placeholder="e.g., E-commerce, Financial Services">
+                <label for="q1-size" class="question-label">What is your company size?</label>
+                <select id="q1-size" class="question-select">
+                    <option>1-10 employees</option>
+                    <option>11-50 employees</option>
+                    <option>51-200 employees</option>
+                    <option>201-1000 employees</option>
+                    <option>1000+ employees</option>
+                </select>
+                <div class="modal-nav">
+                    <span></span> <!-- Spacer -->
+                    <button class="next-step-btn btn-gradient px-6 py-2 rounded-lg">Next &rarr;</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Goal -->
+            <div id="step-2" class="question-step">
+                <h3 class="question-title">Your Primary Goal</h3>
+                <label for="q2-goal" class="question-label">What is the single most important business goal you want to achieve with data?</label>
+                <input type="text" id="q2-goal" class="question-input" placeholder="e.g., Increase customer retention by 15%">
+                <div class="modal-nav">
+                    <button class="prev-step-btn bg-white/10 px-6 py-2 rounded-lg">&larr; Back</button>
+                    <button class="next-step-btn btn-gradient px-6 py-2 rounded-lg">Next &rarr;</button>
+                </div>
+            </div>
+            
+            <!-- Step 3: Challenge -->
+            <div id="step-3" class="question-step">
+                <h3 class="question-title">Your Biggest Challenge</h3>
+                <label for="q3-challenge" class="question-label">What is your biggest challenge regarding data right now?</label>
+                <input type="text" id="q3-challenge" class="question-input" placeholder="e.g., Our data is scattered across different systems">
+                 <div class="modal-nav">
+                    <button class="prev-step-btn bg-white/10 px-6 py-2 rounded-lg">&larr; Back</button>
+                    <button class="next-step-btn btn-gradient px-6 py-2 rounded-lg">Next &rarr;</button>
+                </div>
+            </div>
+            
+            <!-- Step 4: Infrastructure -->
+            <div id="step-4" class="question-step">
+                <h3 class="question-title">Your Current Setup</h3>
+                <label for="q4-infra" class="question-label">Briefly describe your current data tools or infrastructure (if any).</label>
+                <input type="text" id="q4-infra" class="question-input" placeholder="e.g., We use Google Sheets and some SQL databases">
+                <div class="modal-nav">
+                    <button class="prev-step-btn bg-white/10 px-6 py-2 rounded-lg">&larr; Back</button>
+                    <button id="generate-proposal-btn" class="btn-gradient px-6 py-2 rounded-lg">✨ Generate Proposal</button>
+                </div>
+            </div>
+
+            <!-- Step 5: Loading & Result -->
+            <div id="step-5" class="question-step">
+                <div id="strategy-output">
+                    <!-- Loading or final output here -->
+                </div>
+                <div class="modal-nav">
+                    <button id="close-modal-btn" class="bg-white/10 px-6 py-2 rounded-lg w-full">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Standard Page Scripts
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if(mobileMenuButton && mobileMenu) { mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden')); document.querySelectorAll('#mobile-menu a').forEach(link => link.addEventListener('click', () => mobileMenu.classList.add('hidden'))); }
+            const header = document.getElementById('header');
+            if(header) { window.addEventListener('scroll', () => { header.classList.toggle('bg-gray-900/80', window.scrollY > 50); header.classList.toggle('backdrop-blur-sm', window.scrollY > 50); header.classList.toggle('shadow-lg', window.scrollY > 50); }); }
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => { anchor.addEventListener('click', function (e) { e.preventDefault(); const targetElement = document.querySelector(this.getAttribute('href')); if (targetElement) targetElement.scrollIntoView({ behavior: 'smooth' }); }); });
+            const slider = document.getElementById('comparison-container');
+            if (slider) { const handle = document.getElementById('slider-handle'); const beforeView = document.querySelector('.comparison-before'); let isDragging = false; const startDragging = () => { isDragging = true; }; const stopDragging = () => { isDragging = false; }; const onDrag = (e) => { if (!isDragging) return; const clientX = e.type === 'touchmove' ? e.touches[0].pageX : e.pageX; const rect = slider.getBoundingClientRect(); let position = ((clientX - rect.left) / rect.width) * 100; position = Math.max(0, Math.min(100, position)); handle.style.left = `${position}%`; beforeView.style.width = `${position}%`; }; handle.addEventListener('mousedown', startDragging); window.addEventListener('mousemove', onDrag); window.addEventListener('mouseup', stopDragging); handle.addEventListener('touchstart', startDragging); window.addEventListener('touchmove', onDrag); window.addEventListener('touchend', stopDragging); }
+
+            // --- AI Questionnaire Script ---
+            const modal = document.getElementById('questionnaire-modal');
+            const startBtn = document.getElementById('start-questionnaire-btn');
+            const closeBtn = document.getElementById('close-modal-btn');
+            const nextBtns = document.querySelectorAll('.next-step-btn');
+            const prevBtns = document.querySelectorAll('.prev-step-btn');
+            const generateBtn = document.getElementById('generate-proposal-btn');
+            const steps = document.querySelectorAll('.question-step');
+            let currentStep = 0;
+
+            const showStep = (stepIndex) => {
+                steps.forEach((step, index) => {
+                    step.classList.toggle('active', index === stepIndex);
+                });
+            };
+
+            startBtn.addEventListener('click', () => {
+                currentStep = 0;
+                showStep(currentStep);
+                modal.classList.add('is-visible');
+            });
+            
+            closeBtn.addEventListener('click', () => modal.classList.remove('is-visible'));
+            modal.addEventListener('click', (e) => { if(e.target === modal) modal.classList.remove('is-visible'); });
+
+            nextBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (currentStep < steps.length - 1) {
+                        currentStep++;
+                        showStep(currentStep);
+                    }
+                });
+            });
+
+            prevBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (currentStep > 0) {
+                        currentStep--;
+                        showStep(currentStep);
+                    }
+                });
+            });
+
+            generateBtn.addEventListener('click', async () => {
+                const answers = {
+                    industry: document.getElementById('q1-industry').value.trim(),
+                    size: document.getElementById('q1-size').value,
+                    goal: document.getElementById('q2-goal').value.trim(),
+                    challenge: document.getElementById('q3-challenge').value.trim(),
+                    infra: document.getElementById('q4-infra').value.trim() || 'Not specified',
+                };
+
+                if (!answers.industry || !answers.goal || !answers.challenge) {
+                    alert('Please fill out all required fields (Industry, Goal, Challenge).');
+                    return;
+                }
+                
+                currentStep++;
+                showStep(currentStep);
+                const outputDiv = document.getElementById('strategy-output');
+                outputDiv.innerHTML = '<p>✨ Analyzing your needs and generating a personalized data proposal...</p>';
+
+                const prompt = `
+                    As an expert data strategist from DataQ, create a detailed data strategy proposal for a potential new client.
+                    The client has provided the following information:
+                    - **Industry:** ${answers.industry}
+                    - **Company Size:** ${answers.size}
+                    - **Primary Business Goal:** ${answers.goal}
+                    - **Biggest Data Challenge:** ${answers.challenge}
+                    - **Current Infrastructure:** ${answers.infra}
+
+                    Structure the response in Markdown format. Start with a title like "## Your Personalized Data Strategy Proposal".
+                    Then, create three distinct sections using "###" headings:
+                    1.  **Phase 1: Foundational Data Unification & Governance:** Explain how to build a solid data platform (like a Lakehouse) to address their challenge of scattered data. Emphasize creating a single source of truth and implementing DataQ's governance frameworks for data quality and security.
+                    2.  **Phase 2: Activating Business Intelligence & Analytics:** Describe how, with a unified foundation, the client can leverage BI tools for real-time dashboards and reporting to track progress towards their primary goal (${answers.goal}).
+                    3.  **Phase 3: Advanced AI & Automation for Growth:** Detail how to use AI and machine learning models to proactively tackle their goal. For example, if the goal is retention, suggest building predictive churn models. If it's sales, suggest recommendation engines. Connect this directly to their industry.
+
+                    For each phase, use a paragraph and then a bulleted list of 2-3 key outcomes.
+                    The tone should be professional, consultative, and highly tailored to the client's inputs.
+                    Do not include any sign-off.
+                `;
+
+                try {
+                    const apiKey = ""; // Leave empty for automatic injection
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) throw new Error(`API Error: ${response.status}`);
+                    
+                    const result = await response.json();
+                    let text = 'Sorry, we could not generate a proposal at this time.';
+                    if (result.candidates && result.candidates[0]) {
+                        text = result.candidates[0].content.parts[0].text;
+                    }
+                    
+                    let formattedText = text
+                        .replace(/## (.*)/g, '<h2>$1</h2>')
+                        .replace(/### (.*)/g, '<h3>$1</h3>')
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/\* (.*)/g, '<ul><li>$1</li></ul>') // Basic list conversion
+                        .replace(/<\/ul>\s?<ul>/g, '') // Merge adjacent lists
+                        .replace(/\n/g, '<br>');
+
+                    outputDiv.innerHTML = formattedText;
+                } catch (error) {
+                    console.error('Error calling Gemini API:', error);
+                    outputDiv.innerHTML = `<p class="text-red-400">An error occurred while generating your proposal. Please try again later.</p>`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

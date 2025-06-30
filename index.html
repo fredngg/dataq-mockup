@@ -10,14 +10,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* Custom Tailwind Configuration */
-        @tailwind base;
-        @tailwind components;
-        @tailwind utilities;
-
         :root {
-            --color-teal-primary: #008080; /* A vibrant Teal */
-            --color-coral-secondary: #FF6B6B; /* A modern Coral */
-            --color-professional-blue: #2B78E4; /* New: For Trust & Professionalism */
+            --color-teal-primary: #25B8C4;   /* Bright Cyan from screenshot */
+            --color-coral-secondary: #F86D70; /* Vibrant Coral from screenshot */
+            --color-professional-blue: #2B78E4; /* For Trust & Professionalism */
             --color-off-white: #F9FAFB; /* Off-white for backgrounds */
             --color-lime-accent: #A7F3D0; /* Light lime green for accents */
             --color-bright-yellow: #FDE047; /* Bright yellow for highlights */
@@ -43,16 +39,16 @@
 
         /* Abstract AI/Data Visualization styles */
         .ai-glow {
-            box-shadow: 0 0 15px rgba(0, 128, 128, 0.7), 0 0 30px rgba(0, 128, 128, 0.5);
+            box-shadow: 0 0 15px rgba(37, 184, 196, 0.7), 0 0 30px rgba(37, 184, 196, 0.5);
             animation: pulse-glow 2s infinite alternate;
         }
 
         @keyframes pulse-glow {
-            from { box-shadow: 0 0 15px rgba(0, 128, 128, 0.7), 0 0 30px rgba(0, 128, 128, 0.5); }
-            to { box-shadow: 0 0 25px rgba(0, 128, 128, 0.9), 0 0 45px rgba(0, 128, 128, 0.7); }
+            from { box-shadow: 0 0 15px rgba(37, 184, 196, 0.7), 0 0 30px rgba(37, 184, 196, 0.5); }
+            to { box-shadow: 0 0 25px rgba(37, 184, 196, 0.9), 0 0 45px rgba(37, 184, 196, 0.7); }
         }
 
-        /* Hero section background animation (now as an overlay for fun gradient) */
+        /* Hero section background animation */
         .hero-background-animation {
             position: absolute;
             top: 0;
@@ -60,7 +56,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            z-index: 0; /* Behind the text but above the base blue */
+            z-index: 0;
         }
         .hero-background-animation::before {
             content: '';
@@ -69,11 +65,10 @@
             left: -20%;
             width: 140%;
             height: 140%;
-            /* Animating gradients on top of the solid professional blue */
             background: radial-gradient(circle at 20% 80%, var(--color-teal-primary) 0%, transparent 40%),
                         radial-gradient(circle at 80% 20%, var(--color-coral-secondary) 0%, transparent 40%);
             animation: gradient-shift 10s ease-in-out infinite alternate;
-            opacity: 0.35; /* Increased opacity slightly for more visibility */
+            opacity: 0.35;
             pointer-events: none;
         }
 
@@ -83,17 +78,17 @@
             100% { transform: translate(0, 0); }
         }
 
-        /* Footer specific styling for trust */
+        /* Footer specific styling */
         footer {
-            background-color: var(--color-professional-blue); /* Footer in professional blue */
+            background-color: var(--color-professional-blue);
         }
 
-        /* Before & After Slider styles */
+        /* --- Before & After Slider styles --- */
         .slider-container {
             position: relative;
             width: 100%;
             max-width: 800px;
-            height: 400px; /* Fixed height for demo, adjust as needed */
+            height: 400px;
             overflow: hidden;
             border-radius: 1rem; /* rounded-xl */
             box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); /* shadow-xl */
@@ -107,6 +102,7 @@
             position: absolute;
             top: 0;
             height: 100%;
+            width: 100%; /* Both panes are set to full width */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -116,24 +112,23 @@
             color: white;
             text-align: center;
             padding: 2rem;
+            white-space: nowrap; /* Prevents text wrapping as pane is clipped */
         }
 
-        .before-image-pane {
+        .after-image-pane { /* This is the base layer (RIGHT side) */
             left: 0;
-            width: 100%; /* Always full width as the base */
-            background-color: #888; /* Darker, less appealing base */
-            background-image: linear-gradient(45deg, rgba(0,0,0,0.6) 25%, transparent 25%, transparent 50%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.6) 75%, transparent 75%, transparent);
-            background-size: 20px 20px; /* Chaotic pattern */
-            z-index: 1; /* Before is behind After */
+            background-color: var(--color-teal-primary);
+            background-image: radial-gradient(circle at center, rgba(255,255,255,0.2) 0%, transparent 70%);
+            z-index: 1; /* Sits behind the 'before' pane */
         }
 
-        .after-image-pane {
-            left: 0; /* Always anchored to the left */
-            width: 50%; /* Initial width for partial reveal */
-            background-color: var(--color-teal-primary); /* Bright, appealing */
-            background-image: radial-gradient(circle at center, rgba(255,255,255,0.2) 0%, transparent 70%);
-            z-index: 2; /* After overlays Before */
-            transition: width 0.0s; /* No transition on width for drag smoothness */
+        .before-image-pane { /* This is the overlay (LEFT side) */
+            left: 0;
+            background-color: #888;
+            background-image: linear-gradient(45deg, rgba(0,0,0,0.6) 25%, transparent 25%, transparent 50%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.6) 75%, transparent 75%, transparent);
+            background-size: 20px 20px;
+            z-index: 2; /* Sits on top of the 'after' pane */
+            clip-path: inset(0 50% 0 0);
         }
 
         .slider-handle {
@@ -152,7 +147,7 @@
         }
 
         .slider-handle::before {
-            content: '↔'; /* Visual cue for dragging */
+            content: '↔';
             position: absolute;
             width: 40px;
             height: 40px;
@@ -165,7 +160,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem; /* Icon size inside handle */
+            font-size: 1.5rem;
             color: var(--color-professional-blue);
         }
 
@@ -188,24 +183,16 @@
     <!-- Header -->
     <header class="bg-white shadow-md py-4 px-6 md:px-12 flex justify-between items-center rounded-b-xl">
         <div class="flex items-center">
-            <!-- DataQ Logo -->
-            <svg class="h-8 w-8 mr-2 text-teal-primary" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
-            </svg>
+            <svg class="h-8 w-8 mr-2 text-teal-primary" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
             <a href="#" class="text-2xl font-bold text-teal-primary font-poppins">DataQ</a>
-            <!-- Subtle AI icon next to logo -->
-            <svg class="h-5 w-5 ml-2 text-coral-secondary opacity-80 animate-bounce" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 4.5C7.86 4.5 4.5 7.86 4.5 12s3.36 7.5 7.5 7.5 7.5-3.36 7.5-7.5-3.36-7.5-7.5-7.5zM15 15H9v-2h6v2zm-3-4H9V9h3v2z"/>
-            </svg>
+            <svg class="h-5 w-5 ml-2 text-coral-secondary opacity-80 animate-bounce" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5C7.86 4.5 4.5 7.86 4.5 12s3.36 7.5 7.5 7.5 7.5-3.36 7.5-7.5-3.36-7.5-7.5-7.5zM15 15H9v-2h6v2zm-3-4H9V9h3v2z"/></svg>
         </div>
-        <!-- Navigation -->
         <nav class="hidden md:flex space-x-6">
             <a href="#" class="text-gray-700 hover:text-professional-blue font-medium transition-colors duration-300">Home</a>
             <a href="#services" class="text-gray-700 hover:text-professional-blue font-medium transition-colors duration-300">Services</a>
             <a href="#" class="text-gray-700 hover:text-professional-blue font-medium transition-colors duration-300">About Us</a>
             <a href="#contact" class="text-gray-700 hover:text-professional-blue font-medium transition-colors duration-300">Contact</a>
         </nav>
-        <!-- Mobile Menu Button -->
         <button class="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-teal-primary">
             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
         </button>
@@ -232,73 +219,38 @@
     <section id="services" class="py-16 px-6 md:px-12 bg-off-white">
         <h2 class="text-3xl md:text-5xl font-bold text-center mb-12 text-teal-primary font-poppins">Our Intelligent Solutions</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
-
-            <!-- Service Card 1: Database Administration -->
             <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 transform hover:-translate-y-2 group">
                 <div class="mb-4 text-center">
-                    <svg class="h-16 w-16 text-coral-secondary mx-auto mb-4 group-hover:text-professional-blue transition-colors duration-300" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/>
-                    </svg>
+                    <svg class="h-16 w-16 text-coral-secondary mx-auto mb-4 group-hover:text-professional-blue transition-colors duration-300" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/></svg>
                     <h3 class="text-2xl font-semibold text-gray-800 font-poppins">Database Administration</h3>
                 </div>
-                <p class="text-gray-600 text-center mb-6">
-                    Keep your data foundations solid and secure with our expert care. We ensure peak performance and reliability.
-                </p>
-                <div class="text-center">
-                    <a href="#" class="inline-block text-teal-primary hover:text-professional-blue font-medium transition-colors duration-300 text-sm">Learn More &rarr;</a>
-                </div>
+                <p class="text-gray-600 text-center mb-6">Keep your data foundations solid and secure with our expert care. We ensure peak performance and reliability.</p>
+                <div class="text-center"><a href="#" class="inline-block text-teal-primary hover:text-professional-blue font-medium transition-colors duration-300 text-sm">Learn More &rarr;</a></div>
             </div>
-
-            <!-- Service Card 2: Data Platform Service -->
             <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 transform hover:-translate-y-2 group">
                 <div class="mb-4 text-center">
-                    <svg class="h-16 w-16 text-teal-primary mx-auto mb-4 group-hover:text-professional-blue transition-colors duration-300" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.93-2.08c-.42-1.74-2.14-3-4.93-3h-1v-2h1c2.21 0 4-1.79 4-4s-1.79-4-4-4H7V4h5c4.42 0 8 3.58 8 8 0 2.21-.89 4.21-2.34 5.66l-1.73-1.73z"/>
-                    </svg>
+                    <svg class="h-16 w-16 text-teal-primary mx-auto mb-4 group-hover:text-professional-blue transition-colors duration-300" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.93-2.08c-.42-1.74-2.14-3-4.93-3h-1v-2h1c2.21 0 4-1.79 4-4s-1.79-4-4-4H7V4h5c4.42 0 8 3.58 8 8 0 2.21-.89 4.21-2.34 5.66l-1.73-1.73z"/></svg>
                     <h3 class="text-2xl font-semibold text-gray-800 font-poppins">Data Platform Service</h3>
                 </div>
-                <p class="text-gray-600 text-center mb-6">
-                    Build robust, scalable data environments tailored to your unique needs, from cloud to on-premise.
-                </p>
-                <div class="text-center">
-                    <a href="#" class="inline-block text-teal-primary hover:text-professional-blue font-medium transition-colors duration-300 text-sm">Learn More &rarr;</a>
-                </div>
+                <p class="text-gray-600 text-center mb-6">Build robust, scalable data environments tailored to your unique needs, from cloud to on-premise.</p>
+                <div class="text-center"><a href="#" class="inline-block text-teal-primary hover:text-professional-blue font-medium transition-colors duration-300 text-sm">Learn More &rarr;</a></div>
             </div>
-
-            <!-- Service Card 3: Data Strategy & Governance -->
             <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 transform hover:-translate-y-2 group">
                 <div class="mb-4 text-center">
-                    <!-- Icon for governance - could imply shield or structure -->
-                    <svg class="h-16 w-16 text-professional-blue mx-auto mb-4 group-hover:text-coral-secondary transition-colors duration-300" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 6h2v2h-2V7zm0 4h2v6h-2v-6z"/>
-                    </svg>
+                    <svg class="h-16 w-16 text-professional-blue mx-auto mb-4 group-hover:text-coral-secondary transition-colors duration-300" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 6h2v2h-2V7zm0 4h2v6h-2v-6z"/></svg>
                     <h3 class="text-2xl font-semibold text-gray-800 font-poppins">Data Strategy & Governance</h3>
                 </div>
-                <p class="text-gray-600 text-center mb-6">
-                    Chart a clear course for your data, ensuring quality, compliance, and maximum value. <span class="font-semibold text-professional-blue">Built on trust.</span>
-                </p>
-                <div class="text-center">
-                    <a href="#" class="inline-block text-teal-primary hover:text-professional-blue font-medium transition-colors duration-300 text-sm">Learn More &rarr;</a>
-                </div>
+                <p class="text-gray-600 text-center mb-6">Chart a clear course for your data, ensuring quality, compliance, and maximum value. <span class="font-semibold text-professional-blue">Built on trust.</span></p>
+                <div class="text-center"><a href="#" class="inline-block text-teal-primary hover:text-professional-blue font-medium transition-colors duration-300 text-sm">Learn More &rarr;</a></div>
             </div>
-
-            <!-- Service Card 4: Automation with AI -->
             <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 transform hover:-translate-y-2 group">
                 <div class="mb-4 text-center">
-                    <svg class="h-16 w-16 text-lime-accent mx-auto mb-4 text-teal-primary group-hover:text-professional-blue transition-colors duration-300" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.93-2.08c-.42-1.74-2.14-3-4.93-3h-1v-2h1c2.21 0 4-1.79 4-4s-1.79-4-4-4H7V4h5c4.42 0 8 3.58 8 8 0 2.21-.89 4.21-2.34 5.66l-1.73-1.73z"/>
-                        <circle cx="12" cy="12" r="3" class="text-bright-yellow"/> <!-- AI core -->
-                    </svg>
+                    <svg class="h-16 w-16 text-lime-accent mx-auto mb-4 text-teal-primary group-hover:text-professional-blue transition-colors duration-300" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.93-2.08c-.42-1.74-2.14-3-4.93-3h-1v-2h1c2.21 0 4-1.79 4-4s-1.79-4-4-4H7V4h5c4.42 0 8 3.58 8 8 0 2.21-.89 4.21-2.34 5.66l-1.73-1.73z"/><circle cx="12" cy="12" r="3" class="text-bright-yellow"/></svg>
                     <h3 class="text-2xl font-semibold text-gray-800 font-poppins">Automation with AI</h3>
                 </div>
-                <p class="text-gray-600 text-center mb-6">
-                    Transform operations with intelligent automation and predictive insights, powered by cutting-edge AI.
-                </p>
-                <div class="text-center">
-                    <a href="#" class="inline-block text-teal-primary hover:text-professional-blue font-medium transition-colors duration-300 text-sm">Learn More &rarr;</a>
-                </div>
+                <p class="text-gray-600 text-center mb-6">Transform operations with intelligent automation and predictive insights, powered by cutting-edge AI.</p>
+                <div class="text-center"><a href="#" class="inline-block text-teal-primary hover:text-professional-blue font-medium transition-colors duration-300 text-sm">Learn More &rarr;</a></div>
             </div>
-
         </div>
     </section>
 
@@ -306,20 +258,29 @@
     <section class="py-16 px-6 md:px-12 bg-teal-primary text-white rounded-xl m-4 md:m-8 shadow-xl">
         <div class="max-w-4xl mx-auto text-center">
             <h2 class="text-3xl md:text-5xl font-bold mb-8 font-poppins">Why Choose DataQ?</h2>
-            <p class="text-lg md:text-xl mb-8 font-light">
-                We believe data doesn't have to be dull. At DataQ, we combine deep expertise with a fresh, innovative approach, leveraging AI to unlock smarter, more enjoyable data experiences.
-                It's about clarity, creativity, and turning complex data into your competitive advantage. <span class="font-semibold text-bright-yellow">All built on a foundation of unwavering trust.</span>
-            </p>
+            <p class="text-lg md:text-xl mb-8 font-light">We believe data doesn't have to be dull. At DataQ, we combine deep expertise with a fresh, innovative approach, leveraging AI to unlock smarter, more enjoyable data experiences. It's about clarity, creativity, and turning complex data into your competitive advantage. <span class="font-semibold text-bright-yellow">All built on a foundation of unwavering trust.</span></p>
             <div class="flex flex-wrap justify-center gap-6">
-                <div class="flex items-center space-x-2 bg-coral-secondary px-4 py-2 rounded-full shadow-md text-white font-medium text-sm md:text-base">
-                    <span class="text-xl">✨</span> <span>Innovative Solutions</span>
-                </div>
-                <div class="flex items-center space-x-2 bg-white text-teal-primary px-4 py-2 rounded-full shadow-md font-medium text-sm md:text-base">
-                    <span class="text-xl">🧠</span> <span>AI-Powered Insights</span>
-                </div>
-                <div class="flex items-center space-x-2 bg-professional-blue text-white px-4 py-2 rounded-full shadow-md font-medium text-sm md:text-base">
-                    <span class="text-xl">🔒</span> <span>Trusted Partnership</span>
-                </div>
+                <div class="flex items-center space-x-2 bg-coral-secondary px-4 py-2 rounded-full shadow-md text-white font-medium text-sm md:text-base"><span class="text-xl">✨</span> <span>Innovative Solutions</span></div>
+                <div class="flex items-center space-x-2 bg-white text-teal-primary px-4 py-2 rounded-full shadow-md font-medium text-sm md:text-base"><span class="text-xl">🧠</span> <span>AI-Powered Insights</span></div>
+                <div class="flex items-center space-x-2 bg-professional-blue text-white px-4 py-2 rounded-full shadow-md font-medium text-sm md:text-base"><span class="text-xl">🔒</span> <span>Trusted Partnership</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Partners Section -->
+    <section class="py-16 px-6 md:px-12 bg-white">
+        <h2 class="text-3xl md:text-5xl font-bold text-center mb-4 text-teal-primary font-poppins">Our Technology Partners</h2>
+        <p class="text-lg text-gray-700 max-w-3xl text-center mx-auto mb-12">
+            We build on the shoulders of giants, leveraging best-in-class technologies to deliver robust and scalable solutions.
+        </p>
+        <div class="max-w-2xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-12 items-center">
+            <!-- Google Cloud Partner -->
+            <div class="flex justify-center items-center" title="Google Cloud">
+                <img src="https://www.vectorlogo.zone/logos/google_cloud/google_cloud-ar21.svg" class="h-16 w-auto text-gray-400 opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-300" alt="Google Cloud Logo">
+            </div>
+            <!-- Salesforce Partner -->
+            <div class="flex justify-center items-center" title="Salesforce">
+                 <img src="https://www.vectorlogo.zone/logos/salesforce/salesforce-ar21.svg" class="h-20 w-auto text-gray-400 opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-300" alt="Salesforce Logo">
             </div>
         </div>
     </section>
@@ -333,27 +294,20 @@
             </p>
         </div>
         <div class="slider-container mx-auto" id="sliderContainer">
-            <!-- The 'Before' pane (full width, lower z-index) -->
-            <div class="slider-image-pane before-image-pane" id="beforeImagePane">
-                <div class="text-white">
-                    <svg class="svg-icon mx-auto text-gray-400" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M22 17H2v2h20v-2zm-9-5h9v2h-9v-2zm0-4h9v2h-9V8zM2 11h7V9H2v2zm0 4h7v-2H2v2zm0-8h7V5H2v2z"/>
-                    </svg>
-                    <p class="text-2xl font-poppins">Before DataQ:</p>
-                    <p class="text-lg font-light">Data chaos, missed opportunities, uncertain decisions.</p>
-                </div>
-            </div>
-            <!-- The 'After' pane (overlays 'Before', width controlled by slider) -->
             <div class="slider-image-pane after-image-pane" id="afterImagePane">
                 <div class="text-white">
-                    <svg class="svg-icon mx-auto text-bright-yellow" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8.5l-9 9z"/>
-                    </svg>
+                    <svg class="svg-icon mx-auto text-bright-yellow" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8.5l-9 9z"/></svg>
                     <p class="text-2xl font-poppins">After DataQ:</p>
                     <p class="text-lg font-light">Crystal-clear insights, strategic growth, confident choices.</p>
                 </div>
             </div>
-            <!-- The slider handle -->
+            <div class="slider-image-pane before-image-pane" id="beforeImagePane">
+                <div class="text-white">
+                    <svg class="svg-icon mx-auto text-gray-400" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22 17H2v2h20v-2zm-9-5h9v2h-9v-2zm0-4h9v2h-9V8zM2 11h7V9H2v2zm0 4h7v-2H2v2zm0-8h7V5H2v2z"/></svg>
+                    <p class="text-2xl font-poppins">Before DataQ:</p>
+                    <p class="text-lg font-light">Data chaos, missed opportunities, uncertain decisions.</p>
+                </div>
+            </div>
             <div class="slider-handle" id="sliderHandle"></div>
         </div>
     </section>
@@ -362,9 +316,7 @@
     <section id="contact" class="py-16 px-6 md:px-12 bg-off-white">
         <div class="max-w-4xl mx-auto text-center">
             <h2 class="text-3xl md:text-5xl font-bold text-teal-primary mb-8 font-poppins">Ready to Spark Your Data?</h2>
-            <p class="text-lg md:text-xl text-gray-700 mb-8">
-                Let's chat about how DataQ can transform your data challenges into opportunities for growth and innovation, securely and effectively.
-            </p>
+            <p class="text-lg md:text-xl text-gray-700 mb-8">Let's chat about how DataQ can transform your data challenges into opportunities for growth and innovation, securely and effectively.</p>
             <a href="#" class="inline-block bg-professional-blue text-white font-bold py-3 px-10 rounded-full text-lg hover:bg-teal-primary transition-colors duration-300 transform hover:scale-105 shadow-lg">
                 Get in Touch
             </a>
@@ -373,82 +325,69 @@
 
     <!-- Footer -->
     <footer class="bg-professional-blue text-white py-8 px-6 md:px-12 rounded-t-xl mt-4 md:mt-8">
-        <div class="max-w-6xl mx-auto text-center md:flex md:justify-between md:items-center">
-            <div class="mb-4 md:mb-0">
-                <p class="text-lg font-bold text-bright-yellow">DataQ</p>
-                <p class="text-sm text-gray-300">Sparking Insights. Building Trust.</p>
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+            <!-- Contact Details -->
+            <div class="md:col-span-1">
+                <p class="text-lg font-bold text-bright-yellow mb-2">DataQ</p>
+                <p class="text-sm text-gray-300 mb-4">
+                    Room30, Unit 3.07, Level 3, KL Gateway Mall, 2, Jalan Kerinchi, Kampung Kerinchi, 59200 Kuala Lumpur
+                </p>
+                <div class="space-y-2 text-sm text-gray-300">
+                    <p><a href="tel:+60384081522" class="hover:text-white">📞 +60 3 8408 1522</a></p>
+                    <p><a href="mailto:hello@dataq.tech" class="hover:text-white">✉️ hello@dataq.tech</a></p>
+                </div>
             </div>
-            <nav class="flex justify-center space-x-6 mb-4 md:mb-0">
-                <a href="#" class="text-gray-300 hover:text-white transition-colors duration-300 text-sm">Privacy Policy</a>
-                <a href="#" class="text-300 hover:text-white transition-colors duration-300 text-sm">Terms of Service</a>
-            </nav>
-            <div class="flex justify-center space-x-4">
-                <!-- Social Media Icons (placeholders) -->
-                <a href="#" class="text-gray-300 hover:text-white"><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.49-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.25 5.5 7.72 3.65 5.21c-.3.52-.47 1.13-.47 1.77 0 1.24.63 2.32 1.59 2.96-.58-.02-1.13-.18-1.62-.45v.02c0 2.08 1.48 3.82 3.44 4.21-.36.1-.74.15-1.13.15-.28 0-.55-.03-.81-.08.55 1.71 2.14 2.95 4.03 2.98-1.48 1.16-3.35 1.85-5.38 1.85-.35 0-.69-.02-1.03-.06C2.9 20.35 5.38 21 8 21c7.2 0 11.16-5.96 11.16-11.15 0-.17-.01-.34-.01-.51.77-.55 1.44-1.23 1.97-2.01z"/></svg></a>
-                <a href="#" class="text-gray-300 hover:text-white"><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 0H5C2.24 0 0 2.24 0 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5V5c0-2.76-2.24-5-5-5zm-7 17.5c-2.49 0-4.5-2.01-4.5-4.5S9.51 8.5 12 8.5s4.5 2.01 4.5 4.5-2.01 4.5-4.5 4.5zm5.5-12.5h-2.5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5h2.5c.28 0 .5.22.5.5s-.22.5-.5.5zM12 7.5c-2.49 0-4.5 2.01-4.5 4.5S9.51 16.5 12 16.5s4.5-2.01 4.5-4.5-2.01-4.5-4.5-4.5z"/></svg></a>
-                <a href="#" class="text-gray-300 hover:text-white"><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.04 15.13c-.02-.85-.18-1.68-.48-2.46-.3-.77-.7-1.47-1.19-2.07-.49-.6-.99-1.07-1.55-1.4-.56-.33-1.16-.54-1.79-.64-.63-.1-1.28-.1-1.92-.01-.64.08-1.26.24-1.84.47-.58.23-1.1.53-1.55.88-.45.35-.85.75-1.19 1.19-.34.44-.61.92-.81 1.44-.2.52-.33 1.07-.38 1.63-.05.56-.04 1.13.04 1.7.08.57.24 1.12.48 1.64.24.52.54.98.9 1.39.36.41.76.75 1.19 1.02.43.27.89.47 1.38.58.49.11.99.16 1.5.15.51-.01 1.01-.12 1.48-.32.47-.2.91-.49 1.3-.87.39-.38.72-.81 1-1.28.28-.47.49-.97.62-1.5.13-.53.19-1.08.16-1.63zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM9 16c-1.38 0-2.5-1.12-2.5-2.5S7.62 11 9 11s2.5 1.12 2.5 2.5S10.38 16 9 16zm6 0c-1.38 0-2.5-1.12-2.5-2.5S13.62 11 15 11s2.5 1.12 2.5 2.5S16.38 16 15 16z"/></svg></a>
+            <!-- Footer Navigation & Socials -->
+            <div class="md:col-span-2 flex flex-col md:flex-row justify-between items-center">
+                 <nav class="flex justify-center space-x-6 mb-4 md:mb-0">
+                    <a href="#" class="text-gray-300 hover:text-white transition-colors duration-300 text-sm">Privacy Policy</a>
+                    <a href="#" class="text-gray-300 hover:text-white transition-colors duration-300 text-sm">Terms of Service</a>
+                </nav>
+                <div class="flex justify-center space-x-4">
+                    <!-- Social Media Icons (placeholders) -->
+                    <a href="#" class="text-gray-300 hover:text-white"><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.49-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.25 5.5 7.72 3.65 5.21c-.3.52-.47 1.13-.47 1.77 0 1.24.63 2.32 1.59 2.96-.58-.02-1.13-.18-1.62-.45v.02c0 2.08 1.48 3.82 3.44 4.21-.36.1-.74.15-1.13.15-.28 0-.55-.03-.81-.08.55 1.71 2.14 2.95 4.03 2.98-1.48 1.16-3.35 1.85-5.38 1.85-.35 0-.69-.02-1.03-.06C2.9 20.35 5.38 21 8 21c7.2 0 11.16-5.96 11.16-11.15 0-.17-.01-.34-.01-.51.77-.55 1.44-1.23 1.97-2.01z"/></svg></a>
+                    <a href="#" class="text-gray-300 hover:text-white"><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0H5C2.24 0 0 2.24 0 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5V5c0-2.76-2.24-5-5-5zm-7 17.5c-2.49 0-4.5-2.01-4.5-4.5S9.51 8.5 12 8.5s4.5 2.01 4.5 4.5-2.01 4.5-4.5 4.5zm5.5-12.5h-2.5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5h2.5c.28 0 .5.22.5.5s-.22.5-.5.5zM12 7.5c-2.49 0-4.5 2.01-4.5 4.5S9.51 16.5 12 16.5s4.5-2.01 4.5-4.5-2.01-4.5-4.5-4.5z"/></svg></a>
+                    <a href="#" class="text-gray-300 hover:text-white"><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M22.04 15.13c-.02-.85-.18-1.68-.48-2.46-.3-.77-.7-1.47-1.19-2.07-.49-.6-.99-1.07-1.55-1.4-.56-.33-1.16-.54-1.79-.64-.63-.1-1.28-.1-1.92-.01-.64.08-1.26.24-1.84.47-.58.23-1.1.53-1.55.88-.45.35-.85.75-1.19 1.19-.34.44-.61.92-.81 1.44-.2.52-.33 1.07-.38 1.63-.05.56-.04 1.13.04 1.7.08.57.24 1.12.48 1.64.24.52.54.98.9 1.39.36.41.76.75 1.19 1.02.43.27.89.47 1.38.58.49.11.99.16 1.5.15.51-.01 1.01-.12 1.48-.32.47-.2.91-.49 1.3-.87.39-.38.72-.81 1-1.28.28-.47.49-.97.62-1.5.13-.53.19-1.08.16-1.63zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM9 16c-1.38 0-2.5-1.12-2.5-2.5S7.62 11 9 11s2.5 1.12 2.5 2.5S10.38 16 9 16zm6 0c-1.38 0-2.5-1.12-2.5-2.5S13.62 11 15 11s2.5 1.12 2.5 2.5S16.38 16 15 16z"/></svg></a>
+                </div>
             </div>
         </div>
-        <p class="text-center text-gray-400 text-sm mt-8">&copy; 2025 DataQ. All rights reserved.</p>
+        <p class="text-center text-gray-400 text-sm mt-8 border-t border-gray-700 pt-6">&copy; 2025 DataQ. All rights reserved.</p>
     </footer>
 
     <script>
-        // Before & After Slider JavaScript
         document.addEventListener('DOMContentLoaded', () => {
             const sliderContainer = document.getElementById('sliderContainer');
             const beforeImagePane = document.getElementById('beforeImagePane');
-            const afterImagePane = document.getElementById('afterImagePane');
             const sliderHandle = document.getElementById('sliderHandle');
 
-            // Robust error checking for elements
-            if (!sliderContainer || !beforeImagePane || !afterImagePane || !sliderHandle) {
-                console.error("Error: One or more slider elements not found in the DOM. Please ensure they have the correct IDs (sliderContainer, beforeImagePane, afterImagePane, sliderHandle).");
-                return; // Exit function if elements are missing
+            if (!sliderContainer || !beforeImagePane || !sliderHandle) {
+                console.error("Error: One or more slider elements not found in the DOM.");
+                return;
             }
 
             let isDragging = false;
 
-            // Function to set the slider position
             const setSliderPosition = (x) => {
                 const containerWidth = sliderContainer.offsetWidth;
-                let newX = x;
-
-                // Clamp the newX value within the container bounds (0 to container width)
-                newX = Math.max(0, Math.min(newX, containerWidth));
-
-                // The after-image-pane's width now dictates the reveal.
-                // It expands from left to right, covering the before-image-pane.
-                afterImagePane.style.width = `${newX}px`;
-                sliderHandle.style.left = `${newX}px`;
+                const newX = Math.max(0, Math.min(x, containerWidth));
+                const percentage = (newX / containerWidth) * 100;
+                sliderHandle.style.left = `${percentage}%`;
+                beforeImagePane.style.clipPath = `inset(0 ${100 - percentage}% 0 0)`;
             };
 
-            // Set initial position: handle in the middle (50% of container width)
-            // This means the 'After' pane starts covering 50% of the 'Before' pane.
             setSliderPosition(sliderContainer.offsetWidth / 2);
 
             const startDrag = (e) => {
                 isDragging = true;
                 sliderHandle.style.cursor = 'grabbing';
-                // Prevent default touch/mouse actions like scrolling or text selection
                 e.preventDefault();
             };
 
             const doDrag = (e) => {
                 if (!isDragging) return;
-
                 const containerRect = sliderContainer.getBoundingClientRect();
-                let clientX;
-
-                // Determine clientX based on event type (mouse or touch)
-                if (e.touches && e.touches.length > 0) {
-                    clientX = e.touches[0].clientX;
-                } else {
-                    clientX = e.clientX;
-                }
-
-                // Calculate new X position relative to the container
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
                 const newX = clientX - containerRect.left;
-
                 setSliderPosition(newX);
             };
 
@@ -457,38 +396,26 @@
                 sliderHandle.style.cursor = 'ew-resize';
             };
 
-            // Event listeners for desktop mouse interactions
             sliderHandle.addEventListener('mousedown', startDrag);
             document.addEventListener('mousemove', doDrag);
             document.addEventListener('mouseup', endDrag);
 
-            // Event listeners for mobile touch interactions
             sliderHandle.addEventListener('touchstart', startDrag);
             document.addEventListener('touchmove', doDrag);
             document.addEventListener('touchend', endDrag);
-            document.addEventListener('touchcancel', endDrag); // Handle if touch is interrupted
+            document.addEventListener('touchcancel', endDrag);
 
-            // Adjust slider on window resize
             window.addEventListener('resize', () => {
-                // Ensure elements exist before accessing their properties
-                if (!sliderContainer || !beforeImagePane || !afterImagePane || !sliderHandle) {
-                    console.warn("Slider elements not found during resize. Skipping resize adjustments.");
+                if (!sliderContainer || !beforeImagePane || !sliderHandle) {
                     return;
                 }
-
-                // Get the current handle position as a percentage relative to its parent container's width
-                const currentHandlePercentage = parseFloat(sliderHandle.style.left) / sliderContainer.offsetWidth;
-
-                const containerWidth = sliderContainer.offsetWidth;
-                let newX = containerWidth * currentHandlePercentage;
-
-                // If somehow the percentage calculation gives NaN or the slider was at an extreme
-                // and the container size changed dramatically, re-center or snap to edge.
-                if (isNaN(newX) || !isFinite(newX)) { // Check for NaN and Infinity
-                    newX = containerWidth / 2; // Default to middle if calculation fails
+                const currentPercentage = parseFloat(sliderHandle.style.left);
+                if (isNaN(currentPercentage)) {
+                    setSliderPosition(sliderContainer.offsetWidth / 2);
+                } else {
+                    const newX = (currentPercentage / 100) * sliderContainer.offsetWidth;
+                    setSliderPosition(newX);
                 }
-
-                setSliderPosition(newX);
             });
         });
     </script>

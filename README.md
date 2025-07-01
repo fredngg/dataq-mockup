@@ -11,6 +11,3 @@ JavaScript (ES6+): Vanilla JavaScript is used for all client-side interactivity,
 - Mobile menu toggle.
 - Sticky header appearance.
 - "Before & After" slider functionality.
-- Handling the multi-step AI questionnaire modal.
-- Making the fetch call to the Google Gemini API.
-- Google Gemini API: The core of the AI feature, used to generate dynamic, personalized content based on user input.
